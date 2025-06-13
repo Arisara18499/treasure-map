@@ -3,390 +3,669 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Present Perfect Treasure Map</title>
+    <title>Neon Treasure Hunt Game</title>
     <style>
-        body {
-            font-family: 'Georgia', serif;
-            background: linear-gradient(135deg, #8B4513 0%, #D2691E 50%, #F4A460 100%);
+        * {
             margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-            color: #2F1B14;
+            padding: 0;
+            box-sizing: border-box;
         }
-        
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(45deg, #0a0a0a, #1a1a2e, #16213e);
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .neon-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, #ff006e22 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, #00f5ff22 0%, transparent 50%),
+                        radial-gradient(circle at 40% 80%, #8338ec22 0%, transparent 50%);
+            z-index: -1;
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            background: #F5DEB3;
-            border: 8px solid #8B4513;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="%23D2691E" opacity="0.1"/></svg>') repeat;
-            pointer-events: none;
-        }
-        
-        .title {
-            text-align: center;
-            font-size: 2.5em;
-            color: #8B0000;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-        
-        .subtitle {
-            text-align: center;
-            font-size: 1.2em;
-            color: #654321;
-            margin-bottom: 30px;
-            font-style: italic;
-        }
-        
-        .map-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .treasure-spot {
-            background: #FFEFD5;
-            border: 3px solid #CD853F;
-            border-radius: 15px;
             padding: 20px;
             position: relative;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            transition: transform 0.3s ease;
         }
-        
-        .treasure-spot:hover {
-            transform: translateY(-5px);
-        }
-        
-        .treasure-spot::before {
-            content: '🗺️';
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            font-size: 2em;
-            background: #FFD700;
-            border-radius: 50%;
-            padding: 10px;
-            border: 3px solid #B8860B;
-        }
-        
-        .location-title {
-            font-size: 1.3em;
-            font-weight: bold;
-            color: #8B0000;
-            margin-bottom: 15px;
+
+        .header {
             text-align: center;
-        }
-        
-        .sentence {
-            font-size: 1.1em;
-            line-height: 1.6;
-            margin-bottom: 15px;
-            background: #FFF8DC;
-            padding: 15px;
-            border-radius: 10px;
-            border-left: 5px solid #DAA520;
-        }
-        
-        .blank {
-            display: inline-block;
-            min-width: 80px;
-            height: 30px;
-            border-bottom: 3px solid #8B0000;
-            margin: 0 5px;
-            position: relative;
-            background: #FFFFFF;
-            border-radius: 5px;
-            padding: 5px 10px;
-            font-weight: bold;
-            color: #8B0000;
-        }
-        
-        .word-bank {
-            background: #DEB887;
-            border: 4px solid #8B4513;
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 30px;
-            text-align: center;
-        }
-        
-        .word-bank h3 {
-            color: #8B0000;
-            font-size: 1.5em;
             margin-bottom: 20px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
         }
-        
+
+        .title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-shadow: 0 0 20px #00f5ff, 0 0 40px #00f5ff;
+            margin-bottom: 10px;
+            animation: pulse 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { text-shadow: 0 0 20px #00f5ff, 0 0 40px #00f5ff; }
+            to { text-shadow: 0 0 10px #00f5ff, 0 0 20px #00f5ff; }
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #ff006e;
+            text-shadow: 0 0 10px #ff006e;
+        }
+
+        .team-selection {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 2px solid #00f5ff;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 30px rgba(0, 245, 255, 0.3);
+        }
+
+        .team-input-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .team-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #8338ec;
+            border-radius: 10px;
+            padding: 10px 15px;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            width: 200px;
+        }
+
+        .team-input::placeholder {
+            color: #aaa;
+        }
+
+        .team-input:focus {
+            border-color: #00f5ff;
+            box-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
+        }
+
+        .add-team-btn {
+            background: linear-gradient(45deg, #8338ec, #ff006e);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-team-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(131, 56, 236, 0.5);
+        }
+
+        .teams-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .team-btn {
+            background: linear-gradient(45deg, #1a1a2e, #16213e);
+            border: 2px solid #8338ec;
+            border-radius: 10px;
+            padding: 12px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
+            font-size: 0.9rem;
+        }
+
+        .team-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 15px rgba(131, 56, 236, 0.5);
+        }
+
+        .team-btn.selected {
+            background: linear-gradient(45deg, #8338ec, #ff006e);
+            box-shadow: 0 0 25px rgba(131, 56, 236, 0.8);
+        }
+
+        .team-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .team-diamonds {
+            font-size: 1rem;
+            color: #00f5ff;
+        }
+
+        .word-bank {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 2px solid #ff006e;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 25px rgba(255, 0, 110, 0.3);
+        }
+
+        .word-bank h3 {
+            text-align: center;
+            margin-bottom: 12px;
+            color: #00f5ff;
+            text-shadow: 0 0 10px #00f5ff;
+            font-size: 1.3rem;
+        }
+
         .words {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 8px;
             justify-content: center;
         }
-        
-        .word {
-            background: #FFD700;
-            padding: 10px 20px;
-            border-radius: 25px;
-            border: 3px solid #B8860B;
-            font-weight: bold;
-            color: #8B0000;
+
+        .word-option {
+            background: linear-gradient(45deg, #1a1a2e, #16213e);
+            border: 2px solid #00f5ff;
+            padding: 8px 12px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 1.1em;
-        }
-        
-        .word:hover {
-            background: #FFA500;
-            transform: scale(1.05);
-        }
-        
-        .word.used {
-            background: #D3D3D3;
-            color: #696969;
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-        
-        .instructions {
-            background: #F0E68C;
-            border: 3px solid #DAA520;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        
-        .check-btn {
-            background: #228B22;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.2em;
-            border-radius: 10px;
-            cursor: pointer;
-            display: block;
-            margin: 20px auto;
-            transition: background 0.3s ease;
-        }
-        
-        .check-btn:hover {
-            background: #32CD32;
-        }
-        
-        .score {
-            text-align: center;
-            font-size: 1.3em;
             font-weight: bold;
-            color: #8B0000;
+            color: #fff;
+            font-size: 0.9rem;
         }
-        
-        .correct {
-            background: #90EE90 !important;
-            border-color: #228B22 !important;
+
+        .word-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 15px rgba(0, 245, 255, 0.5);
         }
-        
-        .incorrect {
-            background: #FFB6C1 !important;
-            border-color: #DC143C !important;
+
+        .word-option.selected {
+            background: linear-gradient(45deg, #00f5ff, #8338ec);
+            box-shadow: 0 0 15px rgba(0, 245, 255, 0.8);
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .treasure-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 2px solid #8338ec;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .treasure-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 25px rgba(131, 56, 236, 0.6);
+        }
+
+        .treasure-card.answered {
+            background: linear-gradient(45deg, #00f5ff22, #ff006e22);
+            border-color: #00f5ff;
+        }
+
+        .card-number {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: linear-gradient(45deg, #ff006e, #8338ec);
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .sentence {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .blank {
+            background: rgba(0, 245, 255, 0.2);
+            border: 2px dashed #00f5ff;
+            padding: 3px 12px;
+            border-radius: 5px;
+            display: inline-block;
+            min-width: 80px;
+            margin: 0 3px;
+        }
+
+        .hobby-word {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #00f5ff;
+            text-shadow: 0 0 10px #00f5ff;
+            background: rgba(0, 245, 255, 0.1);
+            padding: 8px;
+            border-radius: 8px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .treasure-card.answered .hobby-word {
+            display: block;
+            animation: neonGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes neonGlow {
+            from { 
+                text-shadow: 0 0 10px #00f5ff;
+                box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+            }
+            to { 
+                text-shadow: 0 0 20px #00f5ff, 0 0 30px #00f5ff;
+                box-shadow: 0 0 30px rgba(0, 245, 255, 0.6);
+            }
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 2px solid #00f5ff;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .current-team {
+            font-weight: bold;
+            color: #ff006e;
+            text-shadow: 0 0 10px #ff006e;
+        }
+
+        .message-area {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 2px solid #8338ec;
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            margin-bottom: 15px;
+            min-height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .message {
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .success {
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        .error {
+            color: #ff0040;
+            text-shadow: 0 0 10px #ff0040;
+        }
+
+        .leaderboard {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 2px solid #ff006e;
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .leaderboard h3 {
+            text-align: center;
+            margin-bottom: 12px;
+            color: #ff006e;
+            text-shadow: 0 0 10px #ff006e;
+            font-size: 1.3rem;
+        }
+
+        @media (max-width: 1024px) {
+            .teams-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            .game-board {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .teams-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .game-board {
+                grid-template-columns: 1fr;
+            }
+            .title {
+                font-size: 2rem;
+            }
+            .team-input-section {
+                flex-direction: column;
+            }
+            .team-input {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="title">🏴‍☠️ Present Perfect Treasure Map 🏴‍☠️</h1>
-        <p class="subtitle">Find the missing words to complete the treasure hunters' stories!</p>
-        
-        <div class="instructions">
-            <strong>Instructions:</strong> Click on words from the Word Bank below to fill in the blanks. Each sentence tells the story of a different treasure hunter using Present Perfect tense!
-        </div>
-        
-        <div class="map-container">
-            <div class="treasure-spot">
-                <div class="location-title">🏝️ Skull Island</div>
-                <div class="sentence">
-                    Captain Jack: "I <span class="blank" data-answer="have"></span> competed at the professional level for over 20 years!"
-                </div>
-            </div>
-            
-            <div class="treasure-spot">
-                <div class="location-title">🗻 Dragon's Peak</div>
-                <div class="sentence">
-                    Explorer Sarah: "I have <span class="blank" data-answer="been"></span> an active geocacher since 2010."
-                </div>
-            </div>
-            
-            <div class="treasure-spot">
-                <div class="location-title">🌊 Mermaid Cove</div>
-                <div class="sentence">
-                    Diver Mike: "We <span class="blank" data-answer="have"></span> discovered three sunken ships this year."
-                </div>
-            </div>
-            
-            <div class="treasure-spot">
-                <div class="location-title">🏰 Ancient Ruins</div>
-                <div class="sentence">
-                    Archaeologist Emma: "She has <span class="blank" data-answer="found"></span> many ancient artifacts in this temple."
-                </div>
-            </div>
-            
-            <div class="treasure-spot">
-                <div class="location-title">🌋 Volcano Cave</div>
-                <div class="sentence">
-                    Adventurer Tom: "They have <span class="blank" data-answer="explored"></span> dangerous caves around the world."
-                </div>
-            </div>
-            
-            <div class="treasure-spot">
-                <div class="location-title">🏴‍☠️ Pirate's Den</div>
-                <div class="sentence">
-                    Captain Morgan: "I have never <span class="blank" data-answer="seen"></span> such a beautiful treasure chest!"
-                </div>
-            </div>
-            
-            <div class="treasure-spot">
-                <div class="location-title">🗝️ Secret Chamber</div>
-                <div class="sentence">
-                    Treasure Hunter Lisa: "We have <span class="blank" data-answer="worked"></span> together for five years now."
-                </div>
-            </div>
-            
-            <div class="treasure-spot">
-                <div class="location-title">💎 Crystal Cavern</div>
-                <div class="sentence">
-                    Gem Expert David: "He has <span class="blank" data-answer="collected"></span> rare crystals from every continent."
-                </div>
-            </div>
-        </div>
-        
-        <div class="word-bank">
-            <h3>🏺 Word Bank - Choose Your Treasure Words! 🏺</h3>
-            <div class="words">
-                <span class="word" onclick="selectWord(this)">have</span>
-                <span class="word" onclick="selectWord(this)">been</span>
-                <span class="word" onclick="selectWord(this)">found</span>
-                <span class="word" onclick="selectWord(this)">explored</span>
-                <span class="word" onclick="selectWord(this)">seen</span>
-                <span class="word" onclick="selectWord(this)">worked</span>
-                <span class="word" onclick="selectWord(this)">collected</span>
-                <span class="word" onclick="selectWord(this)">visited</span>
-            </div>
-        </div>
-        
-        <button class="check-btn" onclick="checkAnswers()">🏆 Check My Treasure Map! 🏆</button>
-        
-        <div class="score" id="score"></div>
-    </div>
+    <div class="neon-bg"></div>
     
+    <div class="container">
+        <div class="header">
+            <h1 class="title">💎 NEON TREASURE HUNT 💎</h1>
+            <p class="subtitle">Present Perfect Adventure Game</p>
+        </div>
+
+        <div class="team-selection">
+            <h3 style="text-align: center; margin-bottom: 15px; color: #00f5ff; text-shadow: 0 0 10px #00f5ff;">Create & Select Teams</h3>
+            <div class="team-input-section">
+                <input type="text" class="team-input" id="teamNameInput" placeholder="Enter team name..." maxlength="20">
+                <button class="add-team-btn" onclick="addTeam()">Add Team</button>
+            </div>
+            <div class="teams-grid" id="teamsGrid">
+                <!-- Teams will be generated here -->
+            </div>
+        </div>
+
+        <div class="game-info">
+            <div class="current-team" id="currentTeam">Add teams and select one to start!</div>
+            <div style="color: #00f5ff; font-weight: bold;">Correct: +10💎 | Wrong: -5💎</div>
+        </div>
+
+        <div class="message-area">
+            <div class="message" id="messageArea">Add your teams and start the treasure hunt!</div>
+        </div>
+
+        <div class="word-bank">
+            <h3>🏦 WORD BANK</h3>
+            <div class="words" id="wordBank">
+                <!-- Words will be generated here -->
+            </div>
+        </div>
+
+        <div class="game-board" id="gameBoard">
+            <!-- Treasure cards will be generated here -->
+        </div>
+
+        <div class="leaderboard">
+            <h3>🏆 LEADERBOARD</h3>
+            <div id="leaderboardContent">
+                Add teams to see the leaderboard!
+            </div>
+        </div>
+    </div>
+
     <script>
+        // Game data
+        const hobbies = [
+            'Archery (ยิงธนู)', 'Target shooting (ยิงเป้า)', 'Listen to music (ฟังเพลง)', 
+            'Read a book (อ่านหนังสือ)', 'Play video games (เล่นวิดีโอเกม)', 
+            'Clean the house (ทำความสะอาดบ้าน)', 'Ride a bike (ขี่จักรยาน)', 
+            'Go for a walk (เดินเล่น)', 'Play football (เล่นฟุตบอล)', 
+            'Hang out with friends (ไปเที่ยวกับเพื่อน)', 'Go to the park (ไปสวนสาธารณะ)', 
+            'Have a picnic (ไปปิกนิก)', 'Play board games (เล่นเกมกระดาน)', 'Geocaching (ล่าสมบัติ GPS)'
+        ];
+
+        const questions = [
+            { sentence: "I have _______ archery for two years.", answer: "practiced", hobby: hobbies[0] },
+            { sentence: "She has _______ target shooting many times.", answer: "done", hobby: hobbies[1] },
+            { sentence: "We have _______ to music all day.", answer: "listened", hobby: hobbies[2] },
+            { sentence: "He has _______ three books this month.", answer: "read", hobby: hobbies[3] },
+            { sentence: "They have _______ video games since morning.", answer: "played", hobby: hobbies[4] },
+            { sentence: "I have _______ the house every weekend.", answer: "cleaned", hobby: hobbies[5] },
+            { sentence: "She has _______ a bike to school.", answer: "ridden", hobby: hobbies[6] },
+            { sentence: "We have _______ for a walk in the park.", answer: "gone", hobby: hobbies[7] },
+            { sentence: "He has _______ football with friends today.", answer: "played", hobby: hobbies[8] },
+            { sentence: "They have _______ out with friends yesterday.", answer: "hung", hobby: hobbies[9] },
+            { sentence: "I have _______ to the park twice this week.", answer: "been", hobby: hobbies[10] },
+            { sentence: "We have _______ a picnic in the garden.", answer: "had", hobby: hobbies[11] },
+            { sentence: "She has _______ board games with family.", answer: "played", hobby: hobbies[12] },
+            { sentence: "They have _______ geocaching many times.", answer: "done", hobby: hobbies[13] }
+        ];
+
+        const wordBank = ["practiced", "done", "listened", "read", "played", "cleaned", "ridden", "gone", "hung", "been", "had"];
+
+        // Game state
+        let teams = [];
+        let teamScores = {};
+        let selectedTeam = null;
         let selectedWord = null;
-        let selectedBlank = null;
-        let answers = {};
-        
-        function selectWord(wordElement) {
-            if (wordElement.classList.contains('used')) return;
-            
-            // Remove previous selection
-            document.querySelectorAll('.word').forEach(w => w.style.background = w.classList.contains('used') ? '#D3D3D3' : '#FFD700');
-            
-            // Select this word
-            selectedWord = wordElement;
-            wordElement.style.background = '#FF6347';
-            
-            // Add click listeners to blanks
-            document.querySelectorAll('.blank').forEach(blank => {
-                blank.style.cursor = 'pointer';
-                blank.onclick = () => fillBlank(blank);
-            });
+        let answeredCards = [];
+
+        // Initialize game
+        function initGame() {
+            createWordBank();
+            createGameBoard();
         }
-        
-        function fillBlank(blankElement) {
-            if (!selectedWord) return;
+
+        function addTeam() {
+            const input = document.getElementById('teamNameInput');
+            const teamName = input.value.trim();
             
-            // Clear previous answer for this blank
-            const oldWord = blankElement.textContent;
-            if (oldWord && oldWord !== '') {
-                // Find the word in word bank and make it available again
-                document.querySelectorAll('.word').forEach(w => {
-                    if (w.textContent === oldWord) {
-                        w.classList.remove('used');
-                        w.style.background = '#FFD700';
-                    }
-                });
+            if (!teamName) {
+                showMessage('Please enter a team name!', 'error');
+                return;
             }
             
-            // Fill the blank
-            blankElement.textContent = selectedWord.textContent;
-            blankElement.style.background = '#FFFFFF';
+            if (teams.includes(teamName)) {
+                showMessage('Team name already exists!', 'error');
+                return;
+            }
             
-            // Mark word as used
-            selectedWord.classList.add('used');
-            selectedWord.style.background = '#D3D3D3';
+            if (teams.length >= 10) {
+                showMessage('Maximum 10 teams allowed!', 'error');
+                return;
+            }
             
-            // Store answer
-            answers[blankElement.dataset.answer] = selectedWord.textContent;
+            teams.push(teamName);
+            teamScores[teamName] = 0;
+            input.value = '';
             
-            // Reset selection
-            selectedWord = null;
-            document.querySelectorAll('.blank').forEach(b => b.onclick = null);
+            updateTeamsDisplay();
+            updateLeaderboard();
+            showMessage(`Team "${teamName}" added!`, 'success');
         }
-        
-        function checkAnswers() {
-            let correct = 0;
-            let total = 0;
+
+        function updateTeamsDisplay() {
+            const teamsGrid = document.getElementById('teamsGrid');
+            teamsGrid.innerHTML = '';
             
-            document.querySelectorAll('.blank').forEach(blank => {
-                total++;
-                const userAnswer = blank.textContent.trim();
-                const correctAnswer = blank.dataset.answer;
+            teams.forEach((team, index) => {
+                const teamBtn = document.createElement('div');
+                teamBtn.className = 'team-btn';
+                teamBtn.onclick = () => selectTeam(team, teamBtn);
+                teamBtn.innerHTML = `
+                    <div class="team-name">${team}</div>
+                    <div class="team-diamonds">💎 ${teamScores[team]}</div>
+                `;
+                teamsGrid.appendChild(teamBtn);
+            });
+        }
+
+        function selectTeam(team, btn) {
+            document.querySelectorAll('.team-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedTeam = team;
+            document.getElementById('currentTeam').textContent = `Current Team: ${team}`;
+            showMessage(`Team ${team} selected! Choose a word and click a card!`, 'success');
+        }
+
+        function createWordBank() {
+            const wordBankEl = document.getElementById('wordBank');
+            wordBank.forEach((word, index) => {
+                const wordBtn = document.createElement('div');
+                wordBtn.className = 'word-option';
+                wordBtn.textContent = word;
+                wordBtn.onclick = () => selectWord(word, wordBtn);
+                wordBankEl.appendChild(wordBtn);
+            });
+        }
+
+        function selectWord(word, btn) {
+            document.querySelectorAll('.word-option').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedWord = word;
+            showMessage(`Word "${word}" selected! Now click a treasure card!`, 'success');
+        }
+
+        function createGameBoard() {
+            const gameBoard = document.getElementById('gameBoard');
+            questions.forEach((question, index) => {
+                const card = document.createElement('div');
+                card.className = 'treasure-card';
+                card.onclick = () => answerQuestion(index, card);
+                card.innerHTML = `
+                    <div class="card-number">${index + 1}</div>
+                    <div class="sentence">${question.sentence}</div>
+                    <div class="hobby-word">${question.hobby}</div>
+                `;
+                gameBoard.appendChild(card);
+            });
+        }
+
+        function answerQuestion(cardIndex, cardElement) {
+            if (!selectedTeam) {
+                showMessage('Please select a team first!', 'error');
+                return;
+            }
+
+            if (!selectedWord) {
+                showMessage('Please select a word from the word bank first!', 'error');
+                return;
+            }
+
+            if (answeredCards.includes(cardIndex)) {
+                showMessage('This question has already been answered!', 'error');
+                return;
+            }
+
+            const question = questions[cardIndex];
+            
+            if (selectedWord === question.answer) {
+                // Correct answer
+                cardElement.classList.add('answered');
+                answeredCards.push(cardIndex);
+                teamScores[selectedTeam] += 10;
                 
-                if (userAnswer === correctAnswer) {
-                    blank.classList.add('correct');
-                    blank.classList.remove('incorrect');
-                    correct++;
-                } else {
-                    blank.classList.add('incorrect');
-                    blank.classList.remove('correct');
+                showMessage(`✅ Correct! Team ${selectedTeam} earned 10 diamonds! 💎`, 'success');
+                
+                // Check if game is complete
+                if (answeredCards.length === questions.length) {
+                    setTimeout(() => {
+                        showMessage('🎉 GAME COMPLETE! All questions answered! 🎉', 'success');
+                        celebrateWin();
+                    }, 1000);
                 }
-            });
-            
-            const scoreElement = document.getElementById('score');
-            const percentage = Math.round((correct / total) * 100);
-            
-            if (percentage === 100) {
-                scoreElement.innerHTML = `🎉 Perfect! You found all the treasure! ${correct}/${total} (${percentage}%) 🎉`;
-                scoreElement.style.color = '#228B22';
-            } else if (percentage >= 70) {
-                scoreElement.innerHTML = `⭐ Great job! You're a skilled treasure hunter! ${correct}/${total} (${percentage}%) ⭐`;
-                scoreElement.style.color = '#DAA520';
+                
             } else {
-                scoreElement.innerHTML = `🗺️ Keep exploring! Check the incorrect answers and try again! ${correct}/${total} (${percentage}%) 🗺️`;
-                scoreElement.style.color = '#DC143C';
+                // Wrong answer
+                teamScores[selectedTeam] = Math.max(0, teamScores[selectedTeam] - 5);
+                showMessage(`❌ Wrong! Team ${selectedTeam} lost 5 diamonds! Correct answer: "${question.answer}"`, 'error');
             }
+
+            // Reset selections
+            selectedWord = null;
+            document.querySelectorAll('.word-option').forEach(b => b.classList.remove('selected'));
+            
+            // Update displays
+            updateTeamsDisplay();
+            updateLeaderboard();
         }
-        
-        // Initialize
-        document.querySelectorAll('.blank').forEach(blank => {
-            blank.style.cursor = 'pointer';
+
+        function updateLeaderboard() {
+            const leaderboard = document.getElementById('leaderboardContent');
+            
+            if (teams.length === 0) {
+                leaderboard.innerHTML = 'Add teams to see the leaderboard!';
+                return;
+            }
+            
+            const sortedTeams = Object.entries(teamScores)
+                .sort(([,a], [,b]) => b - a);
+
+            leaderboard.innerHTML = sortedTeams.map(([team, score], index) => `
+                <div style="display: flex; justify-content: space-between; margin: 8px 0; padding: 8px; background: rgba(255,255,255,0.1); border-radius: 8px;">
+                    <span style="color: ${index === 0 ? '#FFD700' : index === 1 ? '#C0C0C0' : index === 2 ? '#CD7F32' : '#00f5ff'};">
+                        ${index + 1}. ${team}
+                    </span>
+                    <span style="color: #00f5ff;">💎 ${score}</span>
+                </div>
+            `).join('');
+        }
+
+        function showMessage(message, type = '') {
+            const messageArea = document.getElementById('messageArea');
+            messageArea.textContent = message;
+            messageArea.className = `message ${type}`;
+            
+            setTimeout(() => {
+                if (teams.length > 0) {
+                    messageArea.textContent = 'Select a word and click a card to continue...';
+                } else {
+                    messageArea.textContent = 'Add your teams and start the treasure hunt!';
+                }
+                messageArea.className = 'message';
+            }, 3000);
+        }
+
+        function celebrateWin() {
+            document.body.style.animation = 'pulse 0.5s ease-in-out infinite alternate';
+            
+            setTimeout(() => {
+                document.body.style.animation = '';
+            }, 5000);
+        }
+
+        // Allow Enter key to add team
+        document.getElementById('teamNameInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addTeam();
+            }
         });
+
+        // Initialize the game
+        initGame();
     </script>
 </body>
 </html>
