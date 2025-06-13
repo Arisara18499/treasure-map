@@ -1,1 +1,392 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Present Perfect Treasure Map</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #8B4513 0%, #D2691E 50%, #F4A460 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            color: #2F1B14;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #F5DEB3;
+            border: 8px solid #8B4513;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="%23D2691E" opacity="0.1"/></svg>') repeat;
+            pointer-events: none;
+        }
+        
+        .title {
+            text-align: center;
+            font-size: 2.5em;
+            color: #8B0000;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .subtitle {
+            text-align: center;
+            font-size: 1.2em;
+            color: #654321;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        
+        .map-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .treasure-spot {
+            background: #FFEFD5;
+            border: 3px solid #CD853F;
+            border-radius: 15px;
+            padding: 20px;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .treasure-spot:hover {
+            transform: translateY(-5px);
+        }
+        
+        .treasure-spot::before {
+            content: '🗺️';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 2em;
+            background: #FFD700;
+            border-radius: 50%;
+            padding: 10px;
+            border: 3px solid #B8860B;
+        }
+        
+        .location-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #8B0000;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .sentence {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            background: #FFF8DC;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 5px solid #DAA520;
+        }
+        
+        .blank {
+            display: inline-block;
+            min-width: 80px;
+            height: 30px;
+            border-bottom: 3px solid #8B0000;
+            margin: 0 5px;
+            position: relative;
+            background: #FFFFFF;
+            border-radius: 5px;
+            padding: 5px 10px;
+            font-weight: bold;
+            color: #8B0000;
+        }
+        
+        .word-bank {
+            background: #DEB887;
+            border: 4px solid #8B4513;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .word-bank h3 {
+            color: #8B0000;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .words {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .word {
+            background: #FFD700;
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: 3px solid #B8860B;
+            font-weight: bold;
+            color: #8B0000;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+        
+        .word:hover {
+            background: #FFA500;
+            transform: scale(1.05);
+        }
+        
+        .word.used {
+            background: #D3D3D3;
+            color: #696969;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        .instructions {
+            background: #F0E68C;
+            border: 3px solid #DAA520;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .check-btn {
+            background: #228B22;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto;
+            transition: background 0.3s ease;
+        }
+        
+        .check-btn:hover {
+            background: #32CD32;
+        }
+        
+        .score {
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #8B0000;
+        }
+        
+        .correct {
+            background: #90EE90 !important;
+            border-color: #228B22 !important;
+        }
+        
+        .incorrect {
+            background: #FFB6C1 !important;
+            border-color: #DC143C !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">🏴‍☠️ Present Perfect Treasure Map 🏴‍☠️</h1>
+        <p class="subtitle">Find the missing words to complete the treasure hunters' stories!</p>
+        
+        <div class="instructions">
+            <strong>Instructions:</strong> Click on words from the Word Bank below to fill in the blanks. Each sentence tells the story of a different treasure hunter using Present Perfect tense!
+        </div>
+        
+        <div class="map-container">
+            <div class="treasure-spot">
+                <div class="location-title">🏝️ Skull Island</div>
+                <div class="sentence">
+                    Captain Jack: "I <span class="blank" data-answer="have"></span> competed at the professional level for over 20 years!"
+                </div>
+            </div>
+            
+            <div class="treasure-spot">
+                <div class="location-title">🗻 Dragon's Peak</div>
+                <div class="sentence">
+                    Explorer Sarah: "I have <span class="blank" data-answer="been"></span> an active geocacher since 2010."
+                </div>
+            </div>
+            
+            <div class="treasure-spot">
+                <div class="location-title">🌊 Mermaid Cove</div>
+                <div class="sentence">
+                    Diver Mike: "We <span class="blank" data-answer="have"></span> discovered three sunken ships this year."
+                </div>
+            </div>
+            
+            <div class="treasure-spot">
+                <div class="location-title">🏰 Ancient Ruins</div>
+                <div class="sentence">
+                    Archaeologist Emma: "She has <span class="blank" data-answer="found"></span> many ancient artifacts in this temple."
+                </div>
+            </div>
+            
+            <div class="treasure-spot">
+                <div class="location-title">🌋 Volcano Cave</div>
+                <div class="sentence">
+                    Adventurer Tom: "They have <span class="blank" data-answer="explored"></span> dangerous caves around the world."
+                </div>
+            </div>
+            
+            <div class="treasure-spot">
+                <div class="location-title">🏴‍☠️ Pirate's Den</div>
+                <div class="sentence">
+                    Captain Morgan: "I have never <span class="blank" data-answer="seen"></span> such a beautiful treasure chest!"
+                </div>
+            </div>
+            
+            <div class="treasure-spot">
+                <div class="location-title">🗝️ Secret Chamber</div>
+                <div class="sentence">
+                    Treasure Hunter Lisa: "We have <span class="blank" data-answer="worked"></span> together for five years now."
+                </div>
+            </div>
+            
+            <div class="treasure-spot">
+                <div class="location-title">💎 Crystal Cavern</div>
+                <div class="sentence">
+                    Gem Expert David: "He has <span class="blank" data-answer="collected"></span> rare crystals from every continent."
+                </div>
+            </div>
+        </div>
+        
+        <div class="word-bank">
+            <h3>🏺 Word Bank - Choose Your Treasure Words! 🏺</h3>
+            <div class="words">
+                <span class="word" onclick="selectWord(this)">have</span>
+                <span class="word" onclick="selectWord(this)">been</span>
+                <span class="word" onclick="selectWord(this)">found</span>
+                <span class="word" onclick="selectWord(this)">explored</span>
+                <span class="word" onclick="selectWord(this)">seen</span>
+                <span class="word" onclick="selectWord(this)">worked</span>
+                <span class="word" onclick="selectWord(this)">collected</span>
+                <span class="word" onclick="selectWord(this)">visited</span>
+            </div>
+        </div>
+        
+        <button class="check-btn" onclick="checkAnswers()">🏆 Check My Treasure Map! 🏆</button>
+        
+        <div class="score" id="score"></div>
+    </div>
+    
+    <script>
+        let selectedWord = null;
+        let selectedBlank = null;
+        let answers = {};
+        
+        function selectWord(wordElement) {
+            if (wordElement.classList.contains('used')) return;
+            
+            // Remove previous selection
+            document.querySelectorAll('.word').forEach(w => w.style.background = w.classList.contains('used') ? '#D3D3D3' : '#FFD700');
+            
+            // Select this word
+            selectedWord = wordElement;
+            wordElement.style.background = '#FF6347';
+            
+            // Add click listeners to blanks
+            document.querySelectorAll('.blank').forEach(blank => {
+                blank.style.cursor = 'pointer';
+                blank.onclick = () => fillBlank(blank);
+            });
+        }
+        
+        function fillBlank(blankElement) {
+            if (!selectedWord) return;
+            
+            // Clear previous answer for this blank
+            const oldWord = blankElement.textContent;
+            if (oldWord && oldWord !== '') {
+                // Find the word in word bank and make it available again
+                document.querySelectorAll('.word').forEach(w => {
+                    if (w.textContent === oldWord) {
+                        w.classList.remove('used');
+                        w.style.background = '#FFD700';
+                    }
+                });
+            }
+            
+            // Fill the blank
+            blankElement.textContent = selectedWord.textContent;
+            blankElement.style.background = '#FFFFFF';
+            
+            // Mark word as used
+            selectedWord.classList.add('used');
+            selectedWord.style.background = '#D3D3D3';
+            
+            // Store answer
+            answers[blankElement.dataset.answer] = selectedWord.textContent;
+            
+            // Reset selection
+            selectedWord = null;
+            document.querySelectorAll('.blank').forEach(b => b.onclick = null);
+        }
+        
+        function checkAnswers() {
+            let correct = 0;
+            let total = 0;
+            
+            document.querySelectorAll('.blank').forEach(blank => {
+                total++;
+                const userAnswer = blank.textContent.trim();
+                const correctAnswer = blank.dataset.answer;
+                
+                if (userAnswer === correctAnswer) {
+                    blank.classList.add('correct');
+                    blank.classList.remove('incorrect');
+                    correct++;
+                } else {
+                    blank.classList.add('incorrect');
+                    blank.classList.remove('correct');
+                }
+            });
+            
+            const scoreElement = document.getElementById('score');
+            const percentage = Math.round((correct / total) * 100);
+            
+            if (percentage === 100) {
+                scoreElement.innerHTML = `🎉 Perfect! You found all the treasure! ${correct}/${total} (${percentage}%) 🎉`;
+                scoreElement.style.color = '#228B22';
+            } else if (percentage >= 70) {
+                scoreElement.innerHTML = `⭐ Great job! You're a skilled treasure hunter! ${correct}/${total} (${percentage}%) ⭐`;
+                scoreElement.style.color = '#DAA520';
+            } else {
+                scoreElement.innerHTML = `🗺️ Keep exploring! Check the incorrect answers and try again! ${correct}/${total} (${percentage}%) 🗺️`;
+                scoreElement.style.color = '#DC143C';
+            }
+        }
+        
+        // Initialize
+        document.querySelectorAll('.blank').forEach(blank => {
+            blank.style.cursor = 'pointer';
+        });
+    </script>
+</body>
+</html>
